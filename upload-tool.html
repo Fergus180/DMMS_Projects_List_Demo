@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Upload Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="file"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .tags-section {
+            margin-top: 20px;
+        }
+
+        .tags-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .tag-item {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            padding: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tag-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tag-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .tag-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+            color: #2c3e50;
+            text-transform: capitalize;
+        }
+
+        .custom-tag {
+            margin-top: 15px;
+        }
+
+        .custom-tag input {
+            margin-top: 5px;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .add-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .output-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .output-title {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .copy-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #2980b9;
+        }
+
+        .instructions {
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #28a745;
+        }
+
+        .instructions h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            color: #155724;
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .step-number {
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .current-projects {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .current-projects h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .project-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .project-item {
+            background: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+
+        .project-item .title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .project-item .tags {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .warning {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .tags-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Project Upload Tool</h1>
+        
+        <div class="warning">
+            <strong>Important:</strong> This tool generates the necessary JSON configuration. You'll still need to manually upload your PDF file to the <code>pdfs/</code> folder in your GitHub repository.
+        </div>
+
+        <form id="uploadForm">
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="projectTitle">Project Title</label>
+                    <input type="text" id="projectTitle" required placeholder="Enter project title">
+                </div>
+
+                <div class="form-group">
+                    <label for="pdfFile">PDF File</label>
+                    <input type="file" id="pdfFile" accept=".pdf" required>
+                </div>
+
+                <div class="tags-section">
+                    <label>Select Tags</label>
+                    <div class="tags-grid">
+                        <div class="tag-item">
+                            <input type="checkbox" id="mechanical" value="mechanical">
+                            <label for="mechanical">Mechanical</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="electrical" value="electrical">
+                            <label for="electrical">Electrical</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="software" value="software">
+                            <label for="software">Software</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="mechatronic" value="mechatronic">
+                            <label for="mechatronic">Mechatronic</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="electronics" value="electronics">
+                            <label for="electronics">Electronics</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="robotics" value="robotics">
+                            <label for="robotics">Robotics</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="automation" value="automation">
+                            <label for="automation">Automation</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="ai" value="ai">
+                            <label for="ai">AI/ML</label>
+                        </div>
+                    </div>
+                    
+                    <div class="custom-tag">
+                        <label for="customTags">Custom Tags (comma-separated)</label>
+                        <input type="text" id="customTags" placeholder="e.g., iot, embedded, control-systems">
+                    </div>
+                </div>
+
+                <button type="submit" class="add-btn">Generate Configuration</button>
+            </div>
+        </form>
+
+        <div class="output-section" id="outputSection" style="display: none;">
+            <div class="output-title">Updated projects.json</div>
+            <div class="code-block" id="jsonOutput"></div>
+            <button class="copy-btn" onclick="copyToClipboard('jsonOutput')">Copy JSON</button>
+            <button class="copy-btn" onclick="downloadJSON()">Download JSON</button>
+            
+            <div class="instructions">
+                <h3>🚀 Deployment Instructions</h3>
+                <ol>
+                    <li><span class="step-number">Step 1:</span> Upload your PDF file to the <code>pdfs/</code> folder in your GitHub repository</li>
+                    <li><span class="step-number">Step 2:</span> Replace the <code>projects.json</code> file in your repository with the generated content above</li>
+                    <li><span class="step-number">Step 3:</span> Commit and push your changes to GitHub</li>
+                    <li><span class="step-number">Step 4:</span> Your GitHub Pages site will automatically update with the new project!</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="current-projects" id="currentProjects">
+            <h3>📁 Current Projects</h3>
+            <div class="project-list" id="projectList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Current projects data
+        let currentProjects = [
+            {
+                title: "Robotic Arm Controller",
+                tags: ["mechanical", "electrical", "software"],
+                filename: "robotic-arm-controller.pdf"
+            },
+            {
+                title: "Smart Home System",
+                tags: ["electrical", "software", "mechatronic"],
+                filename: "smart-home-system.pdf"
+            },
+            {
+                title: "Autonomous Drone",
+                tags: ["mechanical", "electrical", "software", "mechatronic"],
+                filename: "autonomous-drone.pdf"
+            },
+            {
+                title: "Web Dashboard",
+                tags: ["software"],
+                filename: "web-dashboard.pdf"
+            },
+            {
+                title: "Motor Control Circuit",
+                tags: ["electrical", "mechatronic"],
+                filename: "motor-control-circuit.pdf"
+            }
+        ];
+
+        // Load existing projects from localStorage
+        function loadExistingProjects() {
+            const stored = localStorage.getItem('projects');
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    currentProjects = parsed.projects || currentProjects;
+                } catch (e) {
+                    console.log('Error loading stored projects, using defaults');
+                }
+            }
+            displayCurrentProjects();
+        }
+
+        // Display current projects
+        function displayCurrentProjects() {
+            const projectList = document.getElementById('projectList');
+            projectList.innerHTML = '';
+            
+            currentProjects.forEach(project => {
+                const item = document.createElement('div');
+                item.className = 'project-item';
+                item.innerHTML = `
+                    <div class="title">${project.title}</div>
+                    <div class="tags">Tags: ${project.tags.join(', ')}</div>
+                `;
+                projectList.appendChild(item);
+            });
+        }
+
+        // Handle form submission
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('projectTitle').value;
+            const pdfFile = document.getElementById('pdfFile').files[0];
+            
+            if (!title || !pdfFile) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Get selected tags
+            const selectedTags = [];
+            const checkboxes = document.querySelectorAll('.tag-item input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => {
+                selectedTags.push(checkbox.value);
+            });
+            
+            // Get custom tags
+            const customTags = document.getElementById('customTags').value;
+            if (customTags) {
+                const customTagArray = customTags.split(',').map(tag => tag.trim().toLowerCase());
+                selectedTags.push(...customTagArray);
+            }
+            
+            if (selectedTags.length === 0) {
+                alert('Please select at least one tag');
+                return;
+            }
+            
+            // Create new project object
+            const newProject = {
+                title: title,
+                tags: [...new Set(selectedTags)], // Remove duplicates
+                filename: pdfFile.name
+            };
+            
+            // Add to current projects
+            currentProjects.push(newProject);
+            
+            // Generate JSON
+            const jsonData = {
+                projects: currentProjects
+            };
+            
+            // Display output
+            const jsonOutput = document.getElementById('jsonOutput');
+            jsonOutput.textContent = JSON.stringify(jsonData, null, 2);
+            
+            document.getElementById('outputSection').style.display = 'block';
+            displayCurrentProjects();
+            
+            // Store in localStorage
+            localStorage.setItem('projects', JSON.stringify(jsonData));
+            
+            // Reset form
+            document.getElementById('uploadForm').reset();
+        });
+
+        // Copy to clipboard function
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Copied to clipboard!');
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+
+        // Download JSON function
+        function downloadJSON() {
+            const jsonOutput = document.getElementById('jsonOutput');
+            const text = jsonOutput.textContent;
+            
+            const blob = new Blob([text], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'projects.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        loadExistingProjects();
+    </script>
+</body>
+</html>

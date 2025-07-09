@@ -514,8 +514,8 @@
             
             projectCards.forEach(card => {
                 const cardTags = card.dataset.tags.split(',');
-                const hasMatchingTag = selectedTags.length === 0 || 
-                    cardTags.some(tag => selectedTags.includes(tag));
+                const hasMatchingTag = selectedTags.length > 0 &&
+                cardTags.some(tag => selectedTags.includes(tag));
                 
                 if (hasMatchingTag) {
                     card.classList.remove('hidden');

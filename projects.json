@@ -1,29 +1,83 @@
 {
   "projects": [
     {
-      "title": "Robotic Arm Controller",
-      "tags": ["mechanical", "electrical", "software"],
-      "filename": "robotic-arm-controller.pdf"
+      "title": "UTS Rover Team Chassis Redesign",
+      "tags": [
+        "Mechanical",
+        "Mechatronics",
+        "UTS Rover Team"
+      ],
+      "filename": "chassis-redesign.pdf"
     },
     {
-      "title": "Smart Home System",
-      "tags": ["electrical", "software", "mechatronic"],
-      "filename": "smart-home-system.pdf"
+      "title": "UTS Rover Team Electronics Additions and Rework",
+      "tags": [
+        "Electrical",
+        "Software",
+        "Mechatronics",
+        "UTS Rover Team",
+        "pcb design"
+      ],
+      "filename": "electronics-additions-and-rework.pdf"
     },
     {
-      "title": "Autonomous Drone",
-      "tags": ["mechanical", "electrical", "software", "mechatronic"],
-      "filename": "autonomous-drone.pdf"
+      "title": "UTS Rover Team Excavation and Construction Pavers Project",
+      "tags": [
+        "Mechanical",
+        "UTS Rover Team"
+      ],
+      "filename": "excavation-and-construction-pavers-project.pdf"
     },
     {
-      "title": "Web Dashboard",
-      "tags": ["software"],
-      "filename": "web-dashboard.pdf"
+      "title": "UTS Rover Team Lunar Regolith Excavation and Rock Clearing",
+      "tags": [
+        "Mechanical",
+        "Electrical",
+        "Software",
+        "Mechatronics",
+        "UTS Rover Team"
+      ],
+      "filename": "lunar-regolith-excavation-and-rock-clearing.pdf"
     },
     {
-      "title": "Motor Control Circuit",
-      "tags": ["electrical", "mechatronic"],
-      "filename": "motor-control-circuit.pdf"
+      "title": "UTS Rover Team Multi-DoF Manipulator",
+      "tags": [
+        "Mechanical",
+        "Electrical",
+        "Software",
+        "Mechatronics",
+        "UTS Rover Team"
+      ],
+      "filename": "multi-dof-manipulator.pdf"
+    },
+    {
+      "title": "UTS Rover Team Network Limited Situational Awareness",
+      "tags": [
+        "Software",
+        "Mechatronics",
+        "UTS Rover Team"
+      ],
+      "filename": "network-limited-situational-awareness.pdf"
+    },
+    {
+      "title": "UTS Rover Team Portable Practice Processing Plant",
+      "tags": [
+        "Mechanical",
+        "Electrical",
+        "Software",
+        "UTS Rover Team"
+      ],
+      "filename": "portable-practice-processing-plant.pdf"
+    },
+    {
+      "title": "UTS Rover Team Space Resources Prospecting Probe",
+      "tags": [
+        "Mechanical",
+        "Electrical",
+        "Software",
+        "UTS Rover Team"
+      ],
+      "filename": "space-resources-prospecting-probe.pdf"
     }
   ]
 }

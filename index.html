@@ -2,23 +2,514 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DMMS Project Browser</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .filter-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-title {
+            font-size: 1.3em;
+            color: #34495e;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .filter-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-control {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 25px;
+            padding: 8px 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .filter-control:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .filter-control input[type="checkbox"] {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .filter-control label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #2c3e50;
+            text-transform: capitalize;
+        }
+
+        .bulk-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .bulk-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .bulk-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .project-card.hidden {
+            display: none;
+        }
+
+        .project-preview {
+            width: 100%;
+            height: 200px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #e9ecef;
+        }
+
+        .project-preview canvas {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-loading {
+            color: #6c757d;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preview-error {
+            color: #dc3545;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e9ecef;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .project-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-title {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .project-link {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .project-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .results-count {
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Project Browser</h1>
-    <div id="filters">
-        <label><input type="checkbox" value="mechanical"> Mechanical</label>
-        <label><input type="checkbox" value="electrical"> Electrical</label>
-        <label><input type="checkbox" value="software"> Software</label>
-        <label><input type="checkbox" value="rover_team"> UTS Rover Team</label>
-        <label><input type="checkbox" value="motorsports_team"> UTS Motorsports Team</label>
-        <label><input type="checkbox" value="industry"> Industry Projects</label>
-        <label><input type="checkbox" value="rocketry_team"> UTS Rocketry Team</label>
-    </div>
-    <div id="projects"></div>
+    <div class="container">
+        <h1>Project Portfolio</h1>
+        
+        <div class="filter-section">
+            <div class="filter-title">Filter by Tags</div>
+            <div class="filter-controls" id="filterControls">
+                <!-- Filter checkboxes will be populated by JavaScript -->
+            </div>
+            <div class="bulk-actions">
+                <button class="bulk-btn" onclick="selectAllTags()">Select All</button>
+                <button class="bulk-btn" onclick="deselectAllTags()">Deselect All</button>
+            </div>
+        </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="script.js"></script>
+        <div class="projects-grid" id="projectsGrid">
+            <!-- Projects will be populated by JavaScript -->
+        </div>
+
+        <div class="results-count" id="resultsCount"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+        // Configure PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+        // Project data - this will be populated from projects.json
+        let projectsData = [
+            {
+                title: "Robotic Arm Controller",
+                tags: ["mechanical", "electrical", "software"],
+                filename: "robotic-arm-controller.pdf"
+            },
+            {
+                title: "Smart Home System",
+                tags: ["electrical", "software", "mechatronic"],
+                filename: "smart-home-system.pdf"
+            },
+            {
+                title: "Autonomous Drone",
+                tags: ["mechanical", "electrical", "software", "mechatronic"],
+                filename: "autonomous-drone.pdf"
+            },
+            {
+                title: "Web Dashboard",
+                tags: ["software"],
+                filename: "web-dashboard.pdf"
+            },
+            {
+                title: "Motor Control Circuit",
+                tags: ["electrical", "mechatronic"],
+                filename: "motor-control-circuit.pdf"
+            }
+        ];
+
+        // Get all unique tags
+        function getAllTags() {
+            const tagSet = new Set();
+            projectsData.forEach(project => {
+                project.tags.forEach(tag => tagSet.add(tag));
+            });
+            return Array.from(tagSet).sort();
+        }
+
+        // Create filter controls
+        function createFilterControls() {
+            const filterControls = document.getElementById('filterControls');
+            const tags = getAllTags();
+            
+            tags.forEach(tag => {
+                const control = document.createElement('div');
+                control.className = 'filter-control';
+                control.innerHTML = `
+                    <input type="checkbox" id="tag-${tag}" checked onchange="filterProjects()">
+                    <label for="tag-${tag}">${tag}</label>
+                `;
+                filterControls.appendChild(control);
+            });
+        }
+
+        // Generate PDF preview
+        async function generatePDFPreview(pdfPath, canvas) {
+            try {
+                const loadingTask = pdfjsLib.getDocument(pdfPath);
+                const pdf = await loadingTask.promise;
+                const page = await pdf.getPage(1);
+                
+                const viewport = page.getViewport({ scale: 1 });
+                const context = canvas.getContext('2d');
+                
+                // Calculate scale to fit in container
+                const containerWidth = canvas.parentElement.clientWidth - 20;
+                const containerHeight = canvas.parentElement.clientHeight - 20;
+                const scaleX = containerWidth / viewport.width;
+                const scaleY = containerHeight / viewport.height;
+                const scale = Math.min(scaleX, scaleY);
+                
+                const scaledViewport = page.getViewport({ scale });
+                
+                canvas.width = scaledViewport.width;
+                canvas.height = scaledViewport.height;
+                
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: scaledViewport
+                };
+                
+                await page.render(renderContext).promise;
+                
+            } catch (error) {
+                console.error('Error generating PDF preview:', error);
+                const previewContainer = canvas.parentElement;
+                previewContainer.innerHTML = '<div class="preview-error">Preview unavailable</div>';
+            }
+        }
+
+        // Create project cards
+        function createProjectCards() {
+            const projectsGrid = document.getElementById('projectsGrid');
+            projectsGrid.innerHTML = '';
+            
+            projectsData.forEach(project => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.dataset.tags = project.tags.join(',');
+                
+                const tagsHtml = project.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                
+                card.innerHTML = `
+                    <div class="project-preview">
+                        <div class="preview-loading">
+                            <div class="loading-spinner"></div>
+                            Loading preview...
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">${project.title}</div>
+                        <div class="project-tags">${tagsHtml}</div>
+                        <a href="pdfs/${project.filename}" class="project-link" target="_blank">View PDF</a>
+                    </div>
+                `;
+                
+                projectsGrid.appendChild(card);
+                
+                // Generate PDF preview
+                const previewContainer = card.querySelector('.project-preview');
+                const canvas = document.createElement('canvas');
+                
+                generatePDFPreview(`pdfs/${project.filename}`, canvas).then(() => {
+                    previewContainer.innerHTML = '';
+                    previewContainer.appendChild(canvas);
+                }).catch(() => {
+                    previewContainer.innerHTML = '<div class="preview-error">Preview unavailable</div>';
+                });
+            });
+        }
+
+        // Filter projects based on selected tags
+        function filterProjects() {
+            const selectedTags = [];
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedTags.push(checkbox.id.replace('tag-', ''));
+                }
+            });
+            
+            const projectCards = document.querySelectorAll('.project-card');
+            let visibleCount = 0;
+            
+            projectCards.forEach(card => {
+                const cardTags = card.dataset.tags.split(',');
+                const hasMatchingTag = selectedTags.length === 0 || 
+                    cardTags.some(tag => selectedTags.includes(tag));
+                
+                if (hasMatchingTag) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            updateResultsCount(visibleCount);
+        }
+
+        // Update results count
+        function updateResultsCount(count) {
+            const resultsCount = document.getElementById('resultsCount');
+            if (count === 0) {
+                resultsCount.innerHTML = '<div class="no-results">No projects match the selected filters</div>';
+            } else {
+                resultsCount.innerHTML = `Showing ${count} project${count !== 1 ? 's' : ''}`;
+            }
+        }
+
+        // Select all tags
+        function selectAllTags() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            filterProjects();
+        }
+
+        // Deselect all tags
+        function deselectAllTags() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            filterProjects();
+        }
+
+        // Load projects from JSON file (if it exists)
+        async function loadProjectsFromJSON() {
+            try {
+                const response = await fetch('projects.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    projectsData = data.projects || projectsData;
+                }
+            } catch (error) {
+                console.log('Using default project data');
+            }
+        }
+
+        // Initialize the application
+        async function init() {
+            await loadProjectsFromJSON();
+            createFilterControls();
+            createProjectCards();
+            filterProjects();
+        }
+
+        // Start the application
+        init();
+    </script>
 </body>
 </html>

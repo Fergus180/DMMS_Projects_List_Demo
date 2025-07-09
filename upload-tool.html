@@ -287,6 +287,23 @@
             <strong>Important:</strong> This tool generates the necessary JSON configuration. You'll still need to manually upload your PDF file to the <code>pdfs/</code> folder in the GitHub repository.
         </div>
 
+        <div class="form-section">
+            <h3 style="margin-bottom: 15px; color: #2c3e50;">⚙️ GitHub Configuration</h3>
+            <div class="form-group">
+                <label for="githubOwner">GitHub Username</label>
+                <input type="text" id="githubOwner" placeholder="your-username" required>
+            </div>
+            <div class="form-group">
+                <label for="githubRepo">Repository Name</label>
+                <input type="text" id="githubRepo" placeholder="your-repo-name" required>
+            </div>
+            <div class="form-group">
+                <label for="githubBranch">Branch</label>
+                <input type="text" id="githubBranch" value="main" required>
+            </div>
+            <button type="button" class="add-btn" onclick="loadProjectsFromGitHub()">Load Projects from GitHub</button>
+        </div>
+
         <form id="uploadForm">
             <div class="form-section">
                 <div class="form-group">
@@ -335,7 +352,7 @@
                             <label for="faculty">faculty</label>
                         </div>
                         <div class="tag-item">
-                            <input type="checkbox" id="industy" value="Industry">
+                            <input type="checkbox" id="industry" value="Industry">
                             <label for="industry">Industry</label>
                         </div>
                     </div>
@@ -374,53 +391,98 @@
     </div>
 
     <script>
-        // Current projects data
-        let currentProjects = [
-            {
-                title: "Robotic Arm Controller",
-                tags: ["mechanical", "electrical", "software"],
-                filename: "robotic-arm-controller.pdf"
-            },
-            {
-                title: "Smart Home System",
-                tags: ["electrical", "software", "mechatronic"],
-                filename: "smart-home-system.pdf"
-            },
-            {
-                title: "Autonomous Drone",
-                tags: ["mechanical", "electrical", "software", "mechatronic"],
-                filename: "autonomous-drone.pdf"
-            },
-            {
-                title: "Web Dashboard",
-                tags: ["software"],
-                filename: "web-dashboard.pdf"
-            },
-            {
-                title: "Motor Control Circuit",
-                tags: ["electrical", "mechatronic"],
-                filename: "motor-control-circuit.pdf"
-            }
-        ];
+        // Current projects data - will be loaded from GitHub
+        let currentProjects = [];
 
-        // Load existing projects from localStorage
-        function loadExistingProjects() {
-            const stored = localStorage.getItem('projects');
-            if (stored) {
-                try {
-                    const parsed = JSON.parse(stored);
-                    currentProjects = parsed.projects || currentProjects;
-                } catch (e) {
-                    console.log('Error loading stored projects, using defaults');
+        // GitHub repository configuration
+        let GITHUB_CONFIG = {
+            owner: '',
+            repo: '',
+            branch: 'main',
+            path: 'projects.json'
+        };
+
+        // Load projects from GitHub with user-provided config
+        async function loadProjectsFromGitHub() {
+            const owner = document.getElementById('githubOwner').value.trim();
+            const repo = document.getElementById('githubRepo').value.trim();
+            const branch = document.getElementById('githubBranch').value.trim() || 'main';
+            
+            if (!owner || !repo) {
+                alert('Please enter both GitHub username and repository name');
+                return;
+            }
+            
+            GITHUB_CONFIG.owner = owner;
+            GITHUB_CONFIG.repo = repo;
+            GITHUB_CONFIG.branch = branch;
+            
+            // Save config to localStorage
+            localStorage.setItem('githubConfig', JSON.stringify(GITHUB_CONFIG));
+            
+            await loadExistingProjects();
+        }
+
+        // Load existing projects from GitHub
+        async function loadExistingProjects() {
+            const loadingMessage = document.getElementById('projectList');
+            loadingMessage.innerHTML = '<div style="text-align: center; color: #6c757d;">Loading projects from GitHub...</div>';
+            
+            if (!GITHUB_CONFIG.owner || !GITHUB_CONFIG.repo) {
+                showError('Please configure your GitHub repository settings first');
+                return;
+            }
+            
+            try {
+                const url = `https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${GITHUB_CONFIG.path}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                currentProjects = data.projects || [];
+                
+                console.log('Successfully loaded projects from GitHub:', currentProjects.length, 'projects');
+                displayCurrentProjects();
+                
+            } catch (error) {
+                console.error('Error loading projects from GitHub:', error);
+                
+                // Try to load from localStorage as fallback
+                const stored = localStorage.getItem('projects');
+                if (stored) {
+                    try {
+                        const parsed = JSON.parse(stored);
+                        currentProjects = parsed.projects || [];
+                        console.log('Loaded projects from localStorage as fallback');
+                        displayCurrentProjects();
+                    } catch (e) {
+                        console.log('Error loading from localStorage fallback');
+                        showError('Unable to load projects. Please check your GitHub repository configuration.');
+                    }
+                } else {
+                    showError('Unable to load projects from GitHub. Please check your repository configuration and ensure the projects.json file exists.');
                 }
             }
-            displayCurrentProjects();
+        }
+
+        // Show error message
+        function showError(message) {
+            const projectList = document.getElementById('projectList');
+            projectList.innerHTML = `<div style="color: #dc3545; text-align: center; padding: 20px; background: #f8d7da; border-radius: 8px;">${message}</div>`;
         }
 
         // Display current projects
         function displayCurrentProjects() {
             const projectList = document.getElementById('projectList');
             projectList.innerHTML = '';
+            
+            if (currentProjects.length === 0) {
+                projectList.innerHTML = '<div style="text-align: center; color: #6c757d;">No projects found</div>';
+                return;
+            }
             
             currentProjects.forEach(project => {
                 const item = document.createElement('div');
@@ -524,7 +586,34 @@
         }
 
         // Initialize
-        loadExistingProjects();
+        function initializeApp() {
+            // Load saved GitHub config
+            const savedConfig = localStorage.getItem('githubConfig');
+            if (savedConfig) {
+                try {
+                    const config = JSON.parse(savedConfig);
+                    GITHUB_CONFIG = { ...GITHUB_CONFIG, ...config };
+                    
+                    // Pre-fill the form fields
+                    document.getElementById('githubOwner').value = GITHUB_CONFIG.owner || '';
+                    document.getElementById('githubRepo').value = GITHUB_CONFIG.repo || '';
+                    document.getElementById('githubBranch').value = GITHUB_CONFIG.branch || 'main';
+                    
+                    // Auto-load projects if config is complete
+                    if (GITHUB_CONFIG.owner && GITHUB_CONFIG.repo) {
+                        loadExistingProjects();
+                    }
+                } catch (e) {
+                    console.log('Error loading saved GitHub config');
+                }
+            }
+            
+            if (!GITHUB_CONFIG.owner || !GITHUB_CONFIG.repo) {
+                showError('Please configure your GitHub repository settings first');
+            }
+        }
+
+        initializeApp();
     </script>
 </body>
 </html>

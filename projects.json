@@ -1,23 +1,29 @@
-[
-  {
-    "title": "Autonomous Rover",
-    "image": "https://via.placeholder.com/400x200?text=Rover",
-    "pdf": "pdfs/autonomous_rover.pdf",
-    "tags": ["mechanical", "software","rover_team"],
-    "description_md": "### Features\n- 4WD platform\n- LiDAR\n- ROS2 Navigation\n\n[View Full PDF](pdfs/autonomous_rover.pdf)"
-  },
-  {
-    "title": "Smart Irrigation System",
-    "image": "https://via.placeholder.com/400x200?text=Irrigation",
-    "pdf": "pdfs/irrigation_system.pdf",
-    "tags": ["mechatronic", "software"],
-    "description_md": "Controls water flow based on soil moisture using sensors.\n\n[View Full PDF](pdfs/irrigation_system.pdf)"
-  },
-  {
-    "title": "PCB Design Tool",
-    "image": "https://via.placeholder.com/400x200?text=PCB+Tool",
-    "pdf": "pdfs/pcb_tool.pdf",
-    "tags": ["electrical", "software"],
-    "description_md": "Auto-routing and simulation features for PCB layout.\n\n[View Full PDF](pdfs/pcb_tool.pdf)"
-  }
-]
+{
+  "projects": [
+    {
+      "title": "Robotic Arm Controller",
+      "tags": ["mechanical", "electrical", "software"],
+      "filename": "robotic-arm-controller.pdf"
+    },
+    {
+      "title": "Smart Home System",
+      "tags": ["electrical", "software", "mechatronic"],
+      "filename": "smart-home-system.pdf"
+    },
+    {
+      "title": "Autonomous Drone",
+      "tags": ["mechanical", "electrical", "software", "mechatronic"],
+      "filename": "autonomous-drone.pdf"
+    },
+    {
+      "title": "Web Dashboard",
+      "tags": ["software"],
+      "filename": "web-dashboard.pdf"
+    },
+    {
+      "title": "Motor Control Circuit",
+      "tags": ["electrical", "mechatronic"],
+      "filename": "motor-control-circuit.pdf"
+    }
+  ]
+}

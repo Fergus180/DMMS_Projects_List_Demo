@@ -86,6 +86,14 @@
         "Faculty"
       ],
       "filename": "faculty-placeholder-project.pdf"
+    },
+    {
+      "title": "Demo Industry Project",
+      "tags": [
+        "Industry",
+        "control systems"
+      ],
+      "filename": "industry-placeholder-project.pdf"
     }
   ]
 }

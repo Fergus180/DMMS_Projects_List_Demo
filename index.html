@@ -175,6 +175,23 @@
             color: #dc3545;
             font-size: 14px;
             text-align: center;
+            padding: 20px;
+        }
+
+        .preview-fallback {
+            color: #6c757d;
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pdf-icon {
+            font-size: 48px;
+            color: #dc3545;
         }
 
         .loading-spinner {
@@ -352,22 +369,61 @@
             });
         }
 
-        // Generate PDF preview
-        async function generatePDFPreview(pdfPath, canvas) {
+        // Check if PDF exists
+        async function checkPDFExists(pdfPath) {
             try {
-                const loadingTask = pdfjsLib.getDocument(pdfPath);
-                const pdf = await loadingTask.promise;
+                const response = await fetch(pdfPath, { method: 'HEAD' });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        // Generate PDF preview with better error handling
+        async function generatePDFPreview(pdfPath, previewContainer) {
+            try {
+                // First check if PDF exists
+                const pdfExists = await checkPDFExists(pdfPath);
+                if (!pdfExists) {
+                    throw new Error('PDF file not found');
+                }
+
+                // Show loading state
+                previewContainer.innerHTML = `
+                    <div class="preview-loading">
+                        <div class="loading-spinner"></div>
+                        Loading preview...
+                    </div>
+                `;
+
+                // Load PDF with timeout
+                const loadingTask = pdfjsLib.getDocument({
+                    url: pdfPath,
+                    cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/cmaps/',
+                    cMapPacked: true,
+                    httpHeaders: {
+                        'Accept': 'application/pdf'
+                    }
+                });
+
+                // Set timeout for loading
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error('PDF loading timeout')), 10000);
+                });
+
+                const pdf = await Promise.race([loadingTask.promise, timeoutPromise]);
                 const page = await pdf.getPage(1);
                 
-                const viewport = page.getViewport({ scale: 1 });
+                const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
                 
                 // Calculate scale to fit in container
-                const containerWidth = canvas.parentElement.clientWidth - 20;
-                const containerHeight = canvas.parentElement.clientHeight - 20;
+                const viewport = page.getViewport({ scale: 1 });
+                const containerWidth = previewContainer.clientWidth - 20;
+                const containerHeight = previewContainer.clientHeight - 20;
                 const scaleX = containerWidth / viewport.width;
                 const scaleY = containerHeight / viewport.height;
-                const scale = Math.min(scaleX, scaleY);
+                const scale = Math.min(scaleX, scaleY, 1.5); // Cap at 1.5x scale
                 
                 const scaledViewport = page.getViewport({ scale });
                 
@@ -381,10 +437,20 @@
                 
                 await page.render(renderContext).promise;
                 
+                // Clear loading and show canvas
+                previewContainer.innerHTML = '';
+                previewContainer.appendChild(canvas);
+                
             } catch (error) {
                 console.error('Error generating PDF preview:', error);
-                const previewContainer = canvas.parentElement;
-                previewContainer.innerHTML = '<div class="preview-error">Preview unavailable</div>';
+                // Show fallback with PDF icon
+                previewContainer.innerHTML = `
+                    <div class="preview-fallback">
+                        <div class="pdf-icon">📄</div>
+                        <div>PDF Preview</div>
+                        <div style="font-size: 12px; color: #999;">Click "View PDF" to open</div>
+                    </div>
+                `;
             }
         }
 
@@ -416,16 +482,11 @@
                 
                 projectsGrid.appendChild(card);
                 
-                // Generate PDF preview
+                // Generate PDF preview with delay to avoid overwhelming the browser
                 const previewContainer = card.querySelector('.project-preview');
-                const canvas = document.createElement('canvas');
-                
-                generatePDFPreview(`pdfs/${project.filename}`, canvas).then(() => {
-                    previewContainer.innerHTML = '';
-                    previewContainer.appendChild(canvas);
-                }).catch(() => {
-                    previewContainer.innerHTML = '<div class="preview-error">Preview unavailable</div>';
-                });
+                setTimeout(() => {
+                    generatePDFPreview(`pdfs/${project.filename}`, previewContainer);
+                }, 100);
             });
         }
 

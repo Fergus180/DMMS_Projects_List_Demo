@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <h2>\${project.title}</h2>
                     <img src="\${project.image}" alt="\${project.title}">
                     <div>\${marked.parse(project.description_md)}</div>
-                    <iframe src="\${project.pdf}" width="100%" height="400px"></iframe>
+                    <a href="${project.pdf}" target="_blank" rel="noopener">📄 View Project PDF</a>
                     <p><strong>Tags:</strong> \${project.tags.join(", ")}</p>
                 \`;
                 projectContainer.appendChild(div);

@@ -3,7 +3,7 @@
     "title": "Autonomous Rover",
     "image": "https://via.placeholder.com/400x200?text=Rover",
     "pdf": "pdfs/autonomous_rover.pdf",
-    "tags": ["mechanical", "software"],
+    "tags": ["mechanical", "software","rover_team"],
     "description_md": "### Features\n- 4WD platform\n- LiDAR\n- ROS2 Navigation\n\n[View Full PDF](pdfs/autonomous_rover.pdf)"
   },
   {

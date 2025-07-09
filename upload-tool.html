@@ -264,6 +264,31 @@
             border: 1px solid #f5c6cb;
         }
 
+        .github-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .github-info h3 {
+            color: #0d47a1;
+            margin-bottom: 10px;
+        }
+
+        .github-info p {
+            color: #1565c0;
+            margin: 5px 0;
+        }
+
+        .github-info code {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -283,25 +308,15 @@
     <div class="container">
         <h1>Project Upload Tool</h1>
         
+        <div class="github-info">
+            <h3>🔗 GitHub Repository Configuration</h3>
+            <p><strong>Repository:</strong> <code>Fergus180/DMMS_Projects_List_Demo</code></p>
+            <p><strong>Branch:</strong> <code>main</code></p>
+            <p><strong>File:</strong> <code>projects.json</code></p>
+        </div>
+        
         <div class="warning">
             <strong>Important:</strong> This tool generates the necessary JSON configuration. You'll still need to manually upload your PDF file to the <code>pdfs/</code> folder in the GitHub repository.
-        </div>
-
-        <div class="form-section">
-            <h3 style="margin-bottom: 15px; color: #2c3e50;">⚙️ GitHub Configuration</h3>
-            <div class="form-group">
-                <label for="githubOwner">GitHub Username</label>
-                <input type="text" id="githubOwner" placeholder="your-username" required>
-            </div>
-            <div class="form-group">
-                <label for="githubRepo">Repository Name</label>
-                <input type="text" id="githubRepo" placeholder="your-repo-name" required>
-            </div>
-            <div class="form-group">
-                <label for="githubBranch">Branch</label>
-                <input type="text" id="githubBranch" value="main" required>
-            </div>
-            <button type="button" class="add-btn" onclick="loadProjectsFromGitHub()">Load Projects from GitHub</button>
         </div>
 
         <form id="uploadForm">
@@ -394,44 +409,18 @@
         // Current projects data - will be loaded from GitHub
         let currentProjects = [];
 
-        // GitHub repository configuration
-        let GITHUB_CONFIG = {
-            owner: '',
-            repo: '',
+        // GitHub repository configuration - now hardcoded to your repo
+        const GITHUB_CONFIG = {
+            owner: 'Fergus180',
+            repo: 'DMMS_Projects_List_Demo',
             branch: 'main',
             path: 'projects.json'
         };
-
-        // Load projects from GitHub with user-provided config
-        async function loadProjectsFromGitHub() {
-            const owner = document.getElementById('githubOwner').value.trim();
-            const repo = document.getElementById('githubRepo').value.trim();
-            const branch = document.getElementById('githubBranch').value.trim() || 'main';
-            
-            if (!owner || !repo) {
-                alert('Please enter both GitHub username and repository name');
-                return;
-            }
-            
-            GITHUB_CONFIG.owner = owner;
-            GITHUB_CONFIG.repo = repo;
-            GITHUB_CONFIG.branch = branch;
-            
-            // Save config to localStorage
-            localStorage.setItem('githubConfig', JSON.stringify(GITHUB_CONFIG));
-            
-            await loadExistingProjects();
-        }
 
         // Load existing projects from GitHub
         async function loadExistingProjects() {
             const loadingMessage = document.getElementById('projectList');
             loadingMessage.innerHTML = '<div style="text-align: center; color: #6c757d;">Loading projects from GitHub...</div>';
-            
-            if (!GITHUB_CONFIG.owner || !GITHUB_CONFIG.repo) {
-                showError('Please configure your GitHub repository settings first');
-                return;
-            }
             
             try {
                 const url = `https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${GITHUB_CONFIG.path}`;
@@ -450,21 +439,9 @@
             } catch (error) {
                 console.error('Error loading projects from GitHub:', error);
                 
-                // Try to load from localStorage as fallback
-                const stored = localStorage.getItem('projects');
-                if (stored) {
-                    try {
-                        const parsed = JSON.parse(stored);
-                        currentProjects = parsed.projects || [];
-                        console.log('Loaded projects from localStorage as fallback');
-                        displayCurrentProjects();
-                    } catch (e) {
-                        console.log('Error loading from localStorage fallback');
-                        showError('Unable to load projects. Please check your GitHub repository configuration.');
-                    }
-                } else {
-                    showError('Unable to load projects from GitHub. Please check your repository configuration and ensure the projects.json file exists.');
-                }
+                // Initialize with empty array if no projects found
+                currentProjects = [];
+                showError('Unable to load projects from GitHub. This might be the first time using the tool, or the projects.json file might not exist yet.');
             }
         }
 
@@ -480,7 +457,7 @@
             projectList.innerHTML = '';
             
             if (currentProjects.length === 0) {
-                projectList.innerHTML = '<div style="text-align: center; color: #6c757d;">No projects found</div>';
+                projectList.innerHTML = '<div style="text-align: center; color: #6c757d;">No projects found. Add your first project below!</div>';
                 return;
             }
             
@@ -548,9 +525,6 @@
             document.getElementById('outputSection').style.display = 'block';
             displayCurrentProjects();
             
-            // Store in localStorage
-            localStorage.setItem('projects', JSON.stringify(jsonData));
-            
             // Reset form
             document.getElementById('uploadForm').reset();
         });
@@ -585,34 +559,12 @@
             URL.revokeObjectURL(url);
         }
 
-        // Initialize
+        // Initialize the app
         function initializeApp() {
-            // Load saved GitHub config
-            const savedConfig = localStorage.getItem('githubConfig');
-            if (savedConfig) {
-                try {
-                    const config = JSON.parse(savedConfig);
-                    GITHUB_CONFIG = { ...GITHUB_CONFIG, ...config };
-                    
-                    // Pre-fill the form fields
-                    document.getElementById('githubOwner').value = GITHUB_CONFIG.owner || '';
-                    document.getElementById('githubRepo').value = GITHUB_CONFIG.repo || '';
-                    document.getElementById('githubBranch').value = GITHUB_CONFIG.branch || 'main';
-                    
-                    // Auto-load projects if config is complete
-                    if (GITHUB_CONFIG.owner && GITHUB_CONFIG.repo) {
-                        loadExistingProjects();
-                    }
-                } catch (e) {
-                    console.log('Error loading saved GitHub config');
-                }
-            }
-            
-            if (!GITHUB_CONFIG.owner || !GITHUB_CONFIG.repo) {
-                showError('Please configure your GitHub repository settings first');
-            }
+            loadExistingProjects();
         }
 
+        // Auto-initialize when page loads
         initializeApp();
     </script>
 </body>

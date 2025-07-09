@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Portfolio</title>
+    <title>Project Upload Tool</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -40,232 +40,228 @@
             background-clip: text;
         }
 
-        .filter-section {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        .form-section {
+            background: white;
             border-radius: 15px;
             padding: 25px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .filter-title {
-            font-size: 1.3em;
-            color: #34495e;
+        .form-group {
             margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: 600;
+            color: #2c3e50;
         }
 
-        .filter-controls {
-            display: flex;
-            flex-wrap: wrap;
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="file"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .tags-section {
+            margin-top: 20px;
+        }
+
+        .tags-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
-            align-items: center;
+            margin-top: 15px;
         }
 
-        .filter-control {
+        .tag-item {
             display: flex;
             align-items: center;
-            background: white;
-            border-radius: 25px;
-            padding: 8px 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            padding: 12px;
             transition: all 0.3s ease;
             cursor: pointer;
         }
 
-        .filter-control:hover {
+        .tag-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .filter-control input[type="checkbox"] {
-            margin-right: 8px;
+        .tag-item input[type="checkbox"] {
+            margin-right: 10px;
             width: 18px;
             height: 18px;
             cursor: pointer;
         }
 
-        .filter-control label {
+        .tag-item label {
+            margin: 0;
             cursor: pointer;
             font-weight: 500;
             color: #2c3e50;
             text-transform: capitalize;
         }
 
-        .bulk-actions {
-            display: flex;
-            gap: 10px;
+        .custom-tag {
             margin-top: 15px;
         }
 
-        .bulk-btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
+        .custom-tag input {
+            margin-top: 5px;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 15px;
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
         }
 
-        .bulk-btn:hover {
+        .add-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
+        .add-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
-        .project-card {
-            background: white;
+        .output-section {
+            background: #f8f9fa;
             border-radius: 15px;
             padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            display: flex;
-            flex-direction: column;
+            margin-top: 25px;
+            border: 2px dashed #dee2e6;
         }
 
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            border-color: #667eea;
-        }
-
-        .project-card.hidden {
-            display: none;
-        }
-
-        .project-preview {
-            width: 100%;
-            height: 200px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-            border: 2px solid #e9ecef;
-        }
-
-        .project-preview canvas {
-            max-width: 100%;
-            max-height: 100%;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .preview-loading {
-            color: #6c757d;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .preview-error {
-            color: #dc3545;
-            font-size: 14px;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .preview-fallback {
-            color: #6c757d;
-            font-size: 14px;
-            text-align: center;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .pdf-icon {
-            font-size: 48px;
-            color: #dc3545;
-        }
-
-        .loading-spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid #e9ecef;
-            border-top: 2px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .project-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .project-title {
+        .output-title {
             font-size: 1.3em;
             color: #2c3e50;
             margin-bottom: 15px;
             font-weight: 600;
         }
 
-        .project-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
             margin-bottom: 15px;
         }
 
-        .tag {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+        .copy-btn {
+            background: #3498db;
             color: white;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 0.85em;
-            font-weight: 500;
-            text-transform: capitalize;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            transition: background 0.3s ease;
         }
 
-        .project-link {
-            display: inline-block;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 500;
-            transition: all 0.3s ease;
+        .copy-btn:hover {
+            background: #2980b9;
         }
 
-        .project-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .results-count {
-            text-align: center;
-            color: #7f8c8d;
+        .instructions {
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+            border-radius: 10px;
+            padding: 20px;
             margin-top: 20px;
-            font-size: 1.1em;
+            border-left: 4px solid #28a745;
         }
 
-        .no-results {
-            text-align: center;
-            color: #7f8c8d;
-            font-size: 1.2em;
-            margin-top: 50px;
+        .instructions h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            color: #155724;
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .step-number {
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .current-projects {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .current-projects h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .project-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .project-item {
+            background: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+
+        .project-item .title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .project-item .tags {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .warning {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
         }
 
         @media (max-width: 768px) {
@@ -277,12 +273,7 @@
                 font-size: 2em;
             }
             
-            .filter-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .projects-grid {
+            .tags-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -290,287 +281,339 @@
 </head>
 <body>
     <div class="container">
-        <h1>Project Portfolio</h1>
+        <h1>Project Upload Tool</h1>
         
-        <div class="filter-section">
-            <div class="filter-title">Filter by Tags</div>
-            <div class="filter-controls" id="filterControls">
-                <!-- Filter checkboxes will be populated by JavaScript -->
-            </div>
-            <div class="bulk-actions">
-                <button class="bulk-btn" onclick="selectAllTags()">Select All</button>
-                <button class="bulk-btn" onclick="deselectAllTags()">Deselect All</button>
-            </div>
+        <div class="warning">
+            <strong>Important:</strong> This tool generates the necessary JSON configuration. You'll still need to manually upload your PDF file to the <code>pdfs/</code> folder in the GitHub repository.
         </div>
 
-        <div class="projects-grid" id="projectsGrid">
-            <!-- Projects will be populated by JavaScript -->
+        <div class="form-section">
+            <h3 style="margin-bottom: 15px; color: #2c3e50;">⚙️ GitHub Configuration</h3>
+            <div class="form-group">
+                <label for="githubOwner">GitHub Username</label>
+                <input type="text" id="githubOwner" placeholder="your-username" required>
+            </div>
+            <div class="form-group">
+                <label for="githubRepo">Repository Name</label>
+                <input type="text" id="githubRepo" placeholder="your-repo-name" required>
+            </div>
+            <div class="form-group">
+                <label for="githubBranch">Branch</label>
+                <input type="text" id="githubBranch" value="main" required>
+            </div>
+            <button type="button" class="add-btn" onclick="loadProjectsFromGitHub()">Load Projects from GitHub</button>
         </div>
 
-        <div class="results-count" id="resultsCount"></div>
-    </div>
+        <form id="uploadForm">
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="projectTitle">Project Title</label>
+                    <input type="text" id="projectTitle" required placeholder="Enter project title">
+                </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    <script>
-        // Configure PDF.js
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+                <div class="form-group">
+                    <label for="pdfFile">PDF File</label>
+                    <input type="file" id="pdfFile" accept=".pdf" required>
+                </div>
 
-        // Project data - this will be populated from projects.json
-        let projectsData = [
-            {
-                title: "Robotic Arm Controller",
-                tags: ["mechanical", "electrical", "software"],
-                filename: "robotic-arm-controller.pdf"
-            },
-            {
-                title: "Smart Home System",
-                tags: ["electrical", "software", "mechatronic"],
-                filename: "smart-home-system.pdf"
-            },
-            {
-                title: "Autonomous Drone",
-                tags: ["mechanical", "electrical", "software", "mechatronic"],
-                filename: "autonomous-drone.pdf"
-            },
-            {
-                title: "Web Dashboard",
-                tags: ["software"],
-                filename: "web-dashboard.pdf"
-            },
-            {
-                title: "Motor Control Circuit",
-                tags: ["electrical", "mechatronic"],
-                filename: "motor-control-circuit.pdf"
-            }
-        ];
-
-        // Get all unique tags
-        function getAllTags() {
-            const tagSet = new Set();
-            projectsData.forEach(project => {
-                project.tags.forEach(tag => tagSet.add(tag));
-            });
-            return Array.from(tagSet).sort();
-        }
-
-        // Create filter controls
-        function createFilterControls() {
-            const filterControls = document.getElementById('filterControls');
-            const tags = getAllTags();
-            
-            tags.forEach(tag => {
-                const control = document.createElement('div');
-                control.className = 'filter-control';
-                control.innerHTML = `
-                    <input type="checkbox" id="tag-${tag}" checked onchange="filterProjects()">
-                    <label for="tag-${tag}">${tag}</label>
-                `;
-                filterControls.appendChild(control);
-            });
-        }
-
-        // Check if PDF exists
-        async function checkPDFExists(pdfPath) {
-            try {
-                const response = await fetch(pdfPath, { method: 'HEAD' });
-                return response.ok;
-            } catch (error) {
-                return false;
-            }
-        }
-
-        // Generate PDF preview with better error handling
-        async function generatePDFPreview(pdfPath, previewContainer) {
-            try {
-                // First check if PDF exists
-                const pdfExists = await checkPDFExists(pdfPath);
-                if (!pdfExists) {
-                    throw new Error('PDF file not found');
-                }
-
-                // Show loading state
-                previewContainer.innerHTML = `
-                    <div class="preview-loading">
-                        <div class="loading-spinner"></div>
-                        Loading preview...
-                    </div>
-                `;
-
-                // Load PDF with timeout
-                const loadingTask = pdfjsLib.getDocument({
-                    url: pdfPath,
-                    cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/cmaps/',
-                    cMapPacked: true,
-                    httpHeaders: {
-                        'Accept': 'application/pdf'
-                    }
-                });
-
-                // Set timeout for loading
-                const timeoutPromise = new Promise((_, reject) => {
-                    setTimeout(() => reject(new Error('PDF loading timeout')), 10000);
-                });
-
-                const pdf = await Promise.race([loadingTask.promise, timeoutPromise]);
-                const page = await pdf.getPage(1);
-                
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-                
-                // Calculate scale to fit in container
-                const viewport = page.getViewport({ scale: 1 });
-                const containerWidth = previewContainer.clientWidth - 20;
-                const containerHeight = previewContainer.clientHeight - 20;
-                const scaleX = containerWidth / viewport.width;
-                const scaleY = containerHeight / viewport.height;
-                const scale = Math.min(scaleX, scaleY, 1.5); // Cap at 1.5x scale
-                
-                const scaledViewport = page.getViewport({ scale });
-                
-                canvas.width = scaledViewport.width;
-                canvas.height = scaledViewport.height;
-                
-                const renderContext = {
-                    canvasContext: context,
-                    viewport: scaledViewport
-                };
-                
-                await page.render(renderContext).promise;
-                
-                // Clear loading and show canvas
-                previewContainer.innerHTML = '';
-                previewContainer.appendChild(canvas);
-                
-            } catch (error) {
-                console.error('Error generating PDF preview:', error);
-                // Show fallback with PDF icon
-                previewContainer.innerHTML = `
-                    <div class="preview-fallback">
-                        <div class="pdf-icon">📄</div>
-                        <div>PDF Preview</div>
-                        <div style="font-size: 12px; color: #999;">Click "View PDF" to open</div>
-                    </div>
-                `;
-            }
-        }
-
-        // Create project cards
-        function createProjectCards() {
-            const projectsGrid = document.getElementById('projectsGrid');
-            projectsGrid.innerHTML = '';
-            
-            projectsData.forEach(project => {
-                const card = document.createElement('div');
-                card.className = 'project-card';
-                card.dataset.tags = project.tags.join(',');
-                
-                const tagsHtml = project.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-                
-                card.innerHTML = `
-                    <div class="project-preview">
-                        <div class="preview-loading">
-                            <div class="loading-spinner"></div>
-                            Loading preview...
+                <div class="tags-section">
+                    <label>Select Tags</label>
+                    <div class="tags-grid">
+                        <div class="tag-item">
+                            <input type="checkbox" id="mechanical" value="Mechanical">
+                            <label for="mechanical">Mechanical</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="electrical" value="Electrical">
+                            <label for="electrical">Electrical</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="software" value="Software">
+                            <label for="software">Software</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="mechatronics" value="Mechatronics">
+                            <label for="mechatronics">Mechatronics</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="rover" value="UTS Rover Team">
+                            <label for="rover">UTS Rover Team</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="motorsports" value="UTS Motorsports Team">
+                            <label for="motorsports">UTS Motorsports Team</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="rocketry" value="UTS Rocketry Team">
+                            <label for="rocketry">UTS Rocketry Team</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="faculty" value="Faculty">
+                            <label for="faculty">faculty</label>
+                        </div>
+                        <div class="tag-item">
+                            <input type="checkbox" id="industry" value="Industry">
+                            <label for="industry">Industry</label>
                         </div>
                     </div>
-                    <div class="project-content">
-                        <div class="project-title">${project.title}</div>
-                        <div class="project-tags">${tagsHtml}</div>
-                        <a href="pdfs/${project.filename}" class="project-link" target="_blank">View PDF</a>
+                    
+                    <div class="custom-tag">
+                        <label for="customTags">Custom Tags (comma-separated)</label>
+                        <input type="text" id="customTags" placeholder="e.g., iot, embedded, control-systems">
                     </div>
-                `;
-                
-                projectsGrid.appendChild(card);
-                
-                // Generate PDF preview with delay to avoid overwhelming the browser
-                const previewContainer = card.querySelector('.project-preview');
-                setTimeout(() => {
-                    generatePDFPreview(`pdfs/${project.filename}`, previewContainer);
-                }, 100);
-            });
-        }
+                </div>
 
-        // Filter projects based on selected tags
-        function filterProjects() {
-            const selectedTags = [];
-            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    selectedTags.push(checkbox.id.replace('tag-', ''));
-                }
-            });
-            
-            const projectCards = document.querySelectorAll('.project-card');
-            let visibleCount = 0;
-            
-            projectCards.forEach(card => {
-                const cardTags = card.dataset.tags.split(',');
-                const hasMatchingTag = selectedTags.length === 0 || 
-                    cardTags.some(tag => selectedTags.includes(tag));
-                
-                if (hasMatchingTag) {
-                    card.classList.remove('hidden');
-                    visibleCount++;
-                } else {
-                    card.classList.add('hidden');
-                }
-            });
-            
-            updateResultsCount(visibleCount);
-        }
+                <button type="submit" class="add-btn">Generate Configuration</button>
+            </div>
+        </form>
 
-        // Update results count
-        function updateResultsCount(count) {
-            const resultsCount = document.getElementById('resultsCount');
-            if (count === 0) {
-                resultsCount.innerHTML = '<div class="no-results">No projects match the selected filters</div>';
-            } else {
-                resultsCount.innerHTML = `Showing ${count} project${count !== 1 ? 's' : ''}`;
+        <div class="output-section" id="outputSection" style="display: none;">
+            <div class="output-title">Updated projects.json</div>
+            <div class="code-block" id="jsonOutput"></div>
+            <button class="copy-btn" onclick="copyToClipboard('jsonOutput')">Copy JSON</button>
+            <button class="copy-btn" onclick="downloadJSON()">Download JSON</button>
+            
+            <div class="instructions">
+                <h3>🚀 Deployment Instructions</h3>
+                <ol>
+                    <li><span class="step-number">Step 1:</span> Upload your PDF file to the <code>pdfs/</code> folder in your GitHub repository</li>
+                    <li><span class="step-number">Step 2:</span> Replace the <code>projects.json</code> file in your repository with the generated content above</li>
+                    <li><span class="step-number">Step 3:</span> Commit and push your changes to GitHub</li>
+                    <li><span class="step-number">Step 4:</span> Your GitHub Pages site will automatically update with the new project!</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="current-projects" id="currentProjects">
+            <h3>📁 Current Projects</h3>
+            <div class="project-list" id="projectList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Current projects data - will be loaded from GitHub
+        let currentProjects = [];
+
+        // GitHub repository configuration
+        let GITHUB_CONFIG = {
+            owner: '',
+            repo: '',
+            branch: 'main',
+            path: 'projects.json'
+        };
+
+        // Load projects from GitHub with user-provided config
+        async function loadProjectsFromGitHub() {
+            const owner = document.getElementById('githubOwner').value.trim();
+            const repo = document.getElementById('githubRepo').value.trim();
+            const branch = document.getElementById('githubBranch').value.trim() || 'main';
+            
+            if (!owner || !repo) {
+                alert('Please enter both GitHub username and repository name');
+                return;
             }
+            
+            GITHUB_CONFIG.owner = owner;
+            GITHUB_CONFIG.repo = repo;
+            GITHUB_CONFIG.branch = branch;
+            
+            // Save config to localStorage
+            localStorage.setItem('githubConfig', JSON.stringify(GITHUB_CONFIG));
+            
+            await loadExistingProjects();
         }
 
-        // Select all tags
-        function selectAllTags() {
-            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = true;
-            });
-            filterProjects();
-        }
-
-        // Deselect all tags
-        function deselectAllTags() {
-            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = false;
-            });
-            filterProjects();
-        }
-
-        // Load projects from JSON file (if it exists)
-        async function loadProjectsFromJSON() {
+        // Load existing projects from GitHub
+        async function loadExistingProjects() {
+            const loadingMessage = document.getElementById('projectList');
+            loadingMessage.innerHTML = '<div style="text-align: center; color: #6c757d;">Loading projects from GitHub...</div>';
+            
+            if (!GITHUB_CONFIG.owner || !GITHUB_CONFIG.repo) {
+                showError('Please configure your GitHub repository settings first');
+                return;
+            }
+            
             try {
-                const response = await fetch('projects.json');
-                if (response.ok) {
-                    const data = await response.json();
-                    projectsData = data.projects || projectsData;
+                const url = `https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${GITHUB_CONFIG.path}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                
+                const data = await response.json();
+                currentProjects = data.projects || [];
+                
+                console.log('Successfully loaded projects from GitHub:', currentProjects.length, 'projects');
+                displayCurrentProjects();
+                
             } catch (error) {
-                console.log('Using default project data');
+                console.error('Error loading projects from GitHub:', error);
+                
+                // Try to load from localStorage as fallback
+                const stored = localStorage.getItem('projects');
+                if (stored) {
+                    try {
+                        const parsed = JSON.parse(stored);
+                        currentProjects = parsed.projects || [];
+                        console.log('Loaded projects from localStorage as fallback');
+                        displayCurrentProjects();
+                    } catch (e) {
+                        console.log('Error loading from localStorage fallback');
+                        showError('Unable to load projects. Please check your GitHub repository configuration.');
+                    }
+                } else {
+                    showError('Unable to load projects from GitHub. Please check your repository configuration and ensure the projects.json file exists.');
+                }
             }
         }
 
-        // Initialize the application
-        async function init() {
-            await loadProjectsFromJSON();
-            createFilterControls();
-            createProjectCards();
-            filterProjects();
+        // Show error message
+        function showError(message) {
+            const projectList = document.getElementById('projectList');
+            projectList.innerHTML = `<div style="color: #dc3545; text-align: center; padding: 20px; background: #f8d7da; border-radius: 8px;">${message}</div>`;
         }
 
-        // Start the application
-        init();
+        // Display current projects
+        function displayCurrentProjects() {
+            const projectList = document.getElementById('projectList');
+            projectList.innerHTML = '';
+            
+            if (currentProjects.length === 0) {
+                projectList.innerHTML = '<div style="text-align: center; color: #6c757d;">No projects found</div>';
+                return;
+            }
+            
+            currentProjects.forEach(project => {
+                const item = document.createElement('div');
+                item.className = 'project-item';
+                item.innerHTML = `
+                    <div class="title">${project.title}</div>
+                    <div class="tags">Tags: ${project.tags.join(', ')}</div>
+                `;
+                projectList.appendChild(item);
+            });
+        }
+
+        // Handle form submission
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('projectTitle').value;
+            const pdfFile = document.getElementById('pdfFile').files[0];
+            
+            if (!title || !pdfFile) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Get selected tags
+            const selectedTags = [];
+            const checkboxes = document.querySelectorAll('.tag-item input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => {
+                selectedTags.push(checkbox.value);
+            });
+            
+            // Get custom tags
+            const customTags = document.getElementById('customTags').value;
+            if (customTags) {
+                const customTagArray = customTags.split(',').map(tag => tag.trim().toLowerCase());
+                selectedTags.push(...customTagArray);
+            }
+            
+            if (selectedTags.length === 0) {
+                alert('Please select at least one tag');
+                return;
+            }
+            
+            // Create new project object
+            const newProject = {
+                title: title,
+                tags: [...new Set(selectedTags)], // Remove duplicates
+                filename: pdfFile.name
+            };
+            
+            // Add to current projects
+            currentProjects.push(newProject);
+            
+            // Generate JSON
+            const jsonData = {
+                projects: currentProjects
+            };
+            
+            // Display output
+            const jsonOutput = document.getElementById('jsonOutput');
+            jsonOutput.textContent = JSON.stringify(jsonData, null, 2);
+            
+            document.getElementById('outputSection').style.display = 'block';
+            displayCurrentProjects();
+            
+            // Store in localStorage
+            localStorage.setItem('projects', JSON.stringify(jsonData));
+            
+            // Reset form
+            document.getElementById('uploadForm').reset();
+        });
+
+        // Copy to clipboard function
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Copied to clipboard!');
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+
+        // Download JSON function
+        function downloadJSON() {
+            const jsonOutput = document.getElementById('jsonOutput');
+            const text = jsonOutput.textContent;
+            
+            const blob = new Blob([text], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'projects.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        function initializeApp() {
+            // Load saved GitHub config
+            const savedConfig = localStorage.getItem('githubConfig');
+            if (savedConfig) {
+                try {
+                    const config = JSON.parse(savedConfig);
+                    GITHUB_CONFIG = { ...GITHUB_CONFIG, ...config };
+                    
+                    // Pre-fill the form fields
+                    document.getElementById('githubOwner').value = GITHUB_CONFIG.owner || '';
+                    document.getElementById('githubRepo').value = GITHUB_CONFIG.repo || '';
+                    document.getElementById('githubBranch').value = GITHUB_CONFIG.branch || 'main';
+                    
+                    // Auto-load projects if config is complete
+                    if (GITHUB_CONFIG.owner && GITHUB_CONFIG.repo) {
+                        loadExistingProjects();
+                    }
+                } catch (e) {
+                    console.log('Error loading saved GitHub config');
+                }
+            }
+            
+            if (!GITHUB_CONFIG.owner || !GITHUB_CONFIG.repo) {
+                showError('Please configure your GitHub repository settings first');
+            }
+        }
+
+        initializeApp();
     </script>
 </body>
 </html>

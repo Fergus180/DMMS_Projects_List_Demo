@@ -13,7 +13,7 @@ This website allows you to display your project PDFs with filtering by tags like
 
 ### Step 2: Use the Upload Tool
 1. Open the upload tool by visiting your website and adding `/upload-tool.html` to the end of the URL
-   - For example: `https://yourusername.github.io/project-portfolio/upload-tool.html`
+   - For example: `https://Fergus180.github.io/DMMS_Project_List_Demo/upload-tool.html`
 2. Fill in the project title (this is what visitors will see)
 3. Select your PDF file using the "Choose File" button
 4. Check the boxes for all tags that apply to your project
@@ -44,8 +44,7 @@ Your website will automatically update within 5-10 minutes. Refresh your website
 
 ### Finding Your Upload Tool
 Your upload tool is located at your website address with `/upload-tool.html` added to the end:
-- If your website is: `https://johnsmith.github.io/my-projects`
-- Then your upload tool is: `https://johnsmith.github.io/my-projects/upload-tool.html`
+Upload tool is: `https://Fergus180.github.io/DMMS_Projects_List_Demo/upload-tool.html`
 
 ### Using the Upload Tool
 1. **Project Title**: Enter the name as you want it to appear on your website

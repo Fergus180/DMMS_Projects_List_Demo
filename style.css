@@ -1,0 +1,21 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+#filters label {
+    margin-right: 10px;
+}
+
+.project {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.project img {
+    max-width: 100%;
+    height: auto;
+}
